@@ -2,16 +2,15 @@
     <div>
       <h1>員工座位系統</h1>
       <form @submit.prevent="submitForm">
-        <input v-model="employee.empId" placeholder="Employee ID" />
-        <input v-model="employee.name" placeholder="Name" />
-        <input v-model="employee.email" placeholder="Email" />
-        <input v-model="employee.floorSeatSeq" placeholder="Floor Seat Sequence" />
-  
-        <input v-model="seatingChart.floorSeatSeq" placeholder="Floor Seat Sequence" />
-        <input v-model="seatingChart.floorNo" placeholder="Floor No" />
-        <input v-model="seatingChart.seatNo" placeholder="Seat No" />
-  
-        <button type="submit">Submit</button>
+        <select v-model="selectedItem">
+          <option value="" disabled></option>
+          <!-- 使用 v-for 從員工資料中渲染選項 -->
+          <option v-for="employee in employees" :key="employee.id" :value="employee.id">
+            {{ employee.name }}
+          </option>
+        </select>
+
+        <button type="送出">Submit</button>
       </form>
     </div>
   </template>
@@ -32,21 +31,25 @@
           floorSeatSeq: '',
           floorNo: '',
           seatNo: '',
-        }
+        },
+        selectedItem: "",    // 這是下拉選單選中的值
+        employees: []        // 這裡存放從後端獲取的員工資料
       };
     },
+    created() {
+    // 在元件創建時發送請求來獲取資料
+    this.fetchEmployees();
+    },
     methods: {
-      async submitForm() {
-        try {
-          await axios.post('http://localhost:8080/api/employee/create', {
-            employee: this.employee,
-            seatingChart: this.seatingChart
-          });
-          alert('Employee and seating created successfully!');
-        } catch (error) {
-          console.error('There was an error!', error);
-        }
-      }
+      fetchEmployees() {
+      axios.get('http://localhost:8080/') 
+        .then(response => {
+          this.employees = response.data; 
+        })
+        .catch(error => {
+          console.error("錯誤", error);
+        });
+    }
     }
   };
   </script>
