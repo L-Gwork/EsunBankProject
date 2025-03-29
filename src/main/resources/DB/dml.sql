@@ -1,0 +1,1 @@
+EXEC Distribute_FLOOR_SEAT 'EMP_ID', 'FLOOR_NO', 'SEAT_NO';
